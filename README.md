@@ -1,134 +1,209 @@
 # infraLABMIT
 
-Monitor de infrassom em tempo real desenvolvido pelo **Laboratório de Mitigação de Tempestades (LABMIT)** — Departamento de Física / UFSC.
+**Real-time infrasound monitor** developed by the **Storm Mitigation Laboratory (LABMIT)** — Department of Physics / Federal University of Santa Catarina (UFSC), Brazil.
+
+🇧🇷 [Versão em Português](README.pt-BR.md)
 
 ---
 
 > [!CAUTION]
-> ## 🔒 Acesso aos Dados — Autorização Obrigatória
+> ## 🔒 Data Access — Authorization Required
 >
-> Os dados coletados e armazenados no Firebase deste projeto são de propriedade do **LABMIT / UFSC** e estão protegidos pelas regras de segurança do Firestore.
+> Data collected and stored in the Firebase database of this project are the property of **LABMIT / UFSC** and are protected by Firestore security rules.
 >
-> **O acesso ao banco de dados requer autorização prévia do autor:**
+> **Access to the database requires prior authorization from the author:**
 >
 > **Prof. Reinaldo Haas** — `reinaldohaas@ufsc.br`
-> Departamento de Física — Universidade Federal de Santa Catarina
+> Department of Physics — Federal University of Santa Catarina (UFSC)
 >
-> Isso inclui:
-> - Leitura de dados via Firebase Console
-> - Uso da chave de serviço (`serviceAccountKey.json`)
-> - Execução do script de análise (`analysis/labmit_analyze.py`)
-> - Qualquer acesso programático ao Firestore (`labmit_packets`, `labmit_stations`, `labmit_seismic_alerts`)
+> This includes:
+> - Reading data via Firebase Console
+> - Using the service account key (`serviceAccountKey.json`)
+> - Running the analysis script (`analysis/labmit_analyze.py`)
+> - Any programmatic access to Firestore (`labmit_packets`, `labmit_stations`, `labmit_seismic_alerts`)
 >
-> Dados coletados pelos voluntários são anônimos e utilizados exclusivamente para pesquisa científica.
+> Data collected by volunteers are anonymous and used exclusively for scientific research purposes.
 
 ---
 
-## 🎯 Sobre o projeto
+## 🎯 About the Project
 
-Aplicação web progressiva (PWA) que captura áudio de baixa frequência via microfone do dispositivo, detecta eventos de infrassom (< 20 Hz), correlaciona com dados meteorológicos e índices de atividade solar, e envia os dados para o Firebase para análise científica.
+A Progressive Web Application (PWA) that captures low-frequency audio via the device microphone, detects infrasound events (< 20 Hz), correlates them with meteorological data and solar activity indices, and uploads the data to Firebase for scientific analysis.
 
-## 🔬 Funcionalidades
+Infrasound — acoustic waves below the human hearing threshold (< 20 Hz) — can propagate over long distances and has been associated with atmospheric phenomena such as thunderstorms, volcanic activity, and severe weather events.
 
-- **Espectrograma ao vivo** com ênfase em 1–100 Hz (modo infrassom)
-- **SPL em tempo real** com detecção de padrões (fala, assovio, motor, infrassom)
-- **Inteligência de tempestade** — correlação com:
-  - Yr.no (previsão meteorológica)
-  - NOAA SWPC (índice Kp, flares solares)
-  - Barômetro do dispositivo (quando disponível)
-- **Sincronização Firebase** — pacotes compatíveis com RedVox API 1000
-- **Alertas sísmicos** — detecção de variações de pressão ≥ 1 hPa
-- **Exportação** CSV e JSON
+## 🔬 Features
 
-## 🛠️ Tecnologias
+- **Live spectrogram** with emphasis on 1–100 Hz (infrasound mode)
+- **Real-time SPL** with pattern detection (speech, whistle, engine, infrasound)
+- **Storm intelligence engine** — correlation with:
+  - Yr.no (weather forecast)
+  - NOAA SWPC (Kp index, solar flares)
+  - Device barometer (when available)
+- **Firebase sync** — packets compatible with RedVox API 1000 format
+- **Seismic alerts** — detection of pressure variations ≥ 1 hPa
+- **Data export** as CSV and JSON
 
-| Camada | Tecnologia |
-|--------|-----------|
+## 🛠️ Technology Stack
+
+| Layer | Technology |
+|-------|-----------|
 | Frontend | React + Vite |
-| Áudio | Web Audio API (`AudioWorklet`) |
-| Backend/DB | Firebase Firestore + Auth anônimo |
-| Clima | API Yr.no + NOAA SWPC |
-| Análise | Python + pandas + matplotlib |
+| Audio | Web Audio API (`AudioWorklet`) |
+| Backend / DB | Firebase Firestore + Anonymous Auth |
+| Weather | Yr.no API + NOAA SWPC |
+| Analysis | Python + pandas + matplotlib |
+| Mobile | Capacitor (Android) |
 
-## 📁 Estrutura
+## 📁 Project Structure
 
 ```
 src/
 ├── components/
-│   ├── LiveSpectrogram.jsx   # Espectrograma canvas em tempo real
-│   ├── MetricsBar.jsx        # Barra SPL / freq / taxa de amostragem
-│   ├── WeatherBar.jsx        # Clima compacto + Kp index
-│   ├── StormAlert.jsx        # Alerta colorido de risco de tempestade
-│   ├── DataPanel.jsx         # Histórico Firebase + local + alertas
-│   ├── AlertPanel.jsx        # Painel de notificações
-│   ├── EventReporter.jsx     # Reporte de eventos pelo pesquisador
-│   └── Onboarding.jsx        # Tutorial inicial
+│   ├── LiveSpectrogram.jsx     # Real-time canvas spectrogram
+│   ├── MetricsBar.jsx          # SPL / frequency / sample rate bar
+│   ├── WeatherBar.jsx          # Compact weather + Kp index
+│   ├── StormAlert.jsx          # Color-coded storm risk alert
+│   ├── DataPanel.jsx           # Firebase history + local + alerts
+│   ├── AlertPanel.jsx          # Notification panel
+│   ├── EventReporter.jsx       # Researcher event reporting form
+│   └── Onboarding.jsx          # Initial tutorial
 ├── hooks/
-│   ├── useAudioCapture.js    # Captura e FFT de áudio
-│   ├── useYr.js              # Previsão Yr.no
-│   ├── useSpaceWeather.js    # NOAA SWPC (Kp, flares)
-│   ├── usePatternDetector.js # Detecção de padrões no FFT
-│   ├── useStormIntelligence.js # Score de risco de tempestade
-│   ├── useBarometer.js       # Sensor de pressão do dispositivo
-│   ├── useDeviceInfo.js      # Informações do dispositivo
-│   └── useFirebaseData.js    # Leitura de dados do Firestore
+│   ├── useAudioCapture.js      # Audio capture and FFT
+│   ├── useYr.js                # Yr.no weather forecast
+│   ├── useSpaceWeather.js      # NOAA SWPC (Kp, solar flares)
+│   ├── usePatternDetector.js   # FFT pattern detection (heuristic)
+│   ├── useStormIntelligence.js # Storm risk score engine
+│   ├── useBarometer.js         # Device pressure sensor
+│   ├── useDeviceInfo.js        # Device metadata
+│   └── useFirebaseData.js      # Firestore read hooks
 ├── store/
-│   └── dataStore.js          # Buffer local + envio para Firebase
-├── firebase.js               # Configuração Firebase
-└── App.jsx                   # Componente raiz
+│   └── dataStore.js            # Local buffer + Firebase upload
+├── firebase.js                 # Firebase configuration
+└── App.jsx                     # Root component
 analysis/
-└── labmit_analyze.py         # Script Python para análise dos dados
+└── labmit_analyze.py           # Python script for data analysis
+android/                        # Capacitor Android project
 ```
 
-## 🚀 Instalação e execução
+## 🚀 Getting Started
 
 ```bash
-# Instalar dependências
+# Install dependencies
 npm install
 
-# Desenvolvimento
+# Start development server
 npm run dev
 
-# Build de produção
+# Production build
 npm run build
 ```
 
-## 🔑 Configuração Firebase
+## 🔑 Firebase Configuration
 
 > [!WARNING]
-> O banco de dados é protegido por regras de segurança do Firestore.
-> A chave de serviço (`serviceAccountKey.json`) **não está incluída** neste repositório
-> e só é fornecida mediante autorização do autor.
+> The database is protected by Firestore security rules.
+> The service account key (`serviceAccountKey.json`) is **not included** in this repository
+> and is only provided upon authorization by the author.
 
-O app usa **autenticação anônima** para gravação de dados pelos voluntários.
-Para **leitura e análise** dos dados coletados, é necessária a chave de serviço:
+The app uses **anonymous authentication** for data collection by volunteers.
+For **reading and analyzing** the collected data, a service account key is required:
 
 ```bash
 pip install firebase-admin pandas matplotlib seaborn
 
-# serviceAccountKey.json deve ser solicitada ao autor
+# Request serviceAccountKey.json from:
 # reinaldohaas@ufsc.br
 
 python analysis/labmit_analyze.py
 ```
 
-## 📊 Estrutura do Firestore
+## 📊 Firestore Structure
 
-| Coleção | Conteúdo | Acesso |
-|---------|---------|--------|
-| `labmit_packets` | Sessões de gravação (SPL, freq, contexto ambiental) | 🔒 Autorizado |
-| `labmit_stations` | Perfil de cada dispositivo/estação | 🔒 Autorizado |
-| `labmit_seismic_alerts` | Variações de pressão ≥ 1 hPa | 🔒 Autorizado |
+| Collection | Contents | Access |
+|------------|---------|--------|
+| `labmit_packets` | Recording sessions (SPL, freq, environmental context) | 🔒 Authorized only |
+| `labmit_stations` | Device/station profile | 🔒 Authorized only |
+| `labmit_seismic_alerts` | Pressure variations ≥ 1 hPa | 🔒 Authorized only |
 
-## 👥 Equipe
+## 🔬 Data Format
 
-- **Prof. Reinaldo Haas** (autor/responsável) — reinaldohaas@ufsc.br
-- **LABMIT — Lab de Mitigação de Tempestades**
-- Departamento de Física — UFSC
-- Florianópolis, SC, Brasil
+Each session is uploaded as a JSON packet compatible with the **RedVox API 1000** format:
 
-## 📄 Licença
+```json
+{
+  "api": "labmit-1000",
+  "api_version": "4.0.0",
+  "station_information": { "id": "LABMIT_XXXXXXXX", "uuid": "...", ... },
+  "timing": { "packet_start": "ISO8601", "packet_end": "ISO8601", ... },
+  "sensors": {
+    "audio": {
+      "spl_db": [...],
+      "dominant_freq_hz": [...],
+      "stats": { "spl_mean": -45.2, "infrasound_percent": 12.3, ... }
+    },
+    "pressure": { "anomaly_count": 0, "anomalies": [...] }
+  },
+  "environmental_context": {
+    "terrestrial": { "source": "yr.no", "storm_warning": false, ... },
+    "space": { "source": "noaa_swpc", "kp_index": 2, "solar_flare": "B5.1" },
+    "storm_intelligence": { "riskScore": 15, "riskLevel": "low", ... }
+  }
+}
+```
 
-O **código-fonte** deste projeto é disponibilizado sob a licença **MIT** para fins científicos e educacionais.
+## 📈 Data Analysis (Python)
 
-Os **dados coletados e armazenados no Firebase** são de propriedade do LABMIT/UFSC e seu acesso é restrito — veja o aviso no início deste documento.
+After obtaining authorization and the service account key:
+
+```python
+# Download all sessions as a pandas DataFrame
+from analysis.labmit_analyze import baixar_pacotes, extrair_leituras
+
+packets = baixar_pacotes(limite=500)
+df = extrair_leituras(packets)
+
+# df columns: timestamp, spl_db, freq_hz, station, location, packet_id
+print(df.describe())
+df.to_csv("labmit_data.csv", index=False)
+```
+
+## 👥 Team
+
+- **Prof. Reinaldo Haas** (author / principal investigator) — reinaldohaas@ufsc.br
+- **LABMIT — Storm Mitigation Laboratory**
+- Department of Physics — Federal University of Santa Catarina (UFSC)
+- Florianópolis, SC, Brazil
+
+## 📄 License
+
+The **source code** of this project is released under the **MIT License** for scientific and educational use.
+
+The **data collected and stored in Firebase** are the property of LABMIT/UFSC. Access is restricted — see the authorization notice at the top of this document.
+
+```
+MIT License
+
+Copyright (c) 2025 Reinaldo Haas / LABMIT-UFSC
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+```
+
+## 📚 References
+
+- RedVox API 1000: https://redvoxinc.github.io/redvox-sdk/
+- NOAA SWPC: https://www.swpc.noaa.gov/
+- Yr.no API: https://api.met.no/
+- Firebase Firestore: https://firebase.google.com/docs/firestore
