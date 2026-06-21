@@ -1,0 +1,40 @@
+# Dependências
+node_modules/
+
+# Build
+dist/
+
+# Ambiente
+.env
+.env.local
+.env.production
+
+# Firebase — NUNCA commitar a chave de serviço!
+serviceAccountKey.json
+*serviceAccount*.json
+firebase-adminsdk*.json
+
+# Logs
+*.log
+npm-debug.log*
+
+# Editor
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Cache Vite
+.vite/
+
+# Análise — dados locais baixados do Firebase
+analysis/labmit_leituras.csv
+analysis/labmit_sessoes.csv
+analysis/labmit_analise.png
+analysis/__pycache__/

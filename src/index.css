@@ -1,0 +1,598 @@
+/* ============================================================
+   LABMIT Infrasound Monitor — CSS Design System
+   Frankenstein: RedVox + Yr + NOAA
+   Lab de Mitigação de Tempestades — Depto de Física / UFSC
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+:root {
+  --bg-dark: #000000;
+  --bg-card: #0d0d0d;
+  --bg-input: #1a1a1a;
+  --bg-surface: #141414;
+  --text-primary: #f0f0f0;
+  --text-secondary: #a0a0a0;
+  --text-muted: #555555;
+  --accent: #e5ff00;
+  --accent-2: #00e5ff;
+  --ok: #00cc66;
+  --warn: #ffaa00;
+  --danger: #ff3333;
+  --border: #222222;
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body, #root {
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+}
+
+body {
+  font-family: var(--font-sans);
+  background: var(--bg-dark);
+  color: var(--text-primary);
+  -webkit-font-smoothing: antialiased;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+}
+
+/* ─── App Layout ─── */
+.app-root {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  height: 100dvh;
+  overflow: hidden;
+}
+
+/* ─── Header ─── */
+.app-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  background: var(--bg-card);
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+  min-height: 44px;
+}
+
+.app-header .logo {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--accent);
+  letter-spacing: 1px;
+}
+
+.app-header .logo span {
+  color: var(--text-muted);
+  font-weight: 400;
+  font-size: 10px;
+  margin-left: 6px;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.rec-indicator {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--danger);
+}
+
+.rec-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--danger);
+  animation: pulse-dot 1s ease infinite;
+}
+
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(255,51,51,0.4); }
+  50% { opacity: 0.6; box-shadow: 0 0 8px 2px rgba(255,51,51,0.3); }
+}
+
+.btn-stop {
+  background: rgba(255,51,51,0.15);
+  border: 1px solid rgba(255,51,51,0.4);
+  color: var(--danger);
+  padding: 4px 12px;
+  border-radius: var(--radius-sm);
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: var(--font-sans);
+}
+
+.btn-record {
+  background: rgba(0,204,102,0.15);
+  border: 1px solid rgba(0,204,102,0.4);
+  color: var(--ok);
+  padding: 6px 16px;
+  border-radius: var(--radius-sm);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: var(--font-sans);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* ─── Topo Fixo ─── */
+.sticky-top {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: var(--bg-dark);
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+
+.spectrogram-container,
+.central-frame {
+  position: relative;
+  flex: 1;
+  min-height: 150px;
+  max-height: 40vh; /* Para garantir que as três linhas apareçam sem espremer o app */
+  background: #000;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.spectrogram-container canvas,
+.central-frame canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* Pattern labels overlaid on spectrogram */
+.pattern-label {
+  position: absolute;
+  font-family: var(--font-sans);
+  font-size: 11px;
+  font-weight: 700;
+  color: #fff;
+  text-shadow: 0 0 4px rgba(0,0,0,0.8), 0 1px 2px rgba(0,0,0,0.6);
+  pointer-events: none;
+  transform: rotate(-45deg);
+  transform-origin: left bottom;
+  white-space: nowrap;
+  letter-spacing: 0.5px;
+}
+
+/* Frequency axis on right side */
+.freq-axis {
+  position: absolute;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: 48px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 4px 4px;
+  pointer-events: none;
+}
+
+.freq-axis span {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  color: rgba(255,255,255,0.5);
+  text-align: right;
+}
+
+/* Time axis on bottom */
+.time-axis {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 48px;
+  height: 16px;
+  display: flex;
+  justify-content: space-between;
+  padding: 0 8px;
+  pointer-events: none;
+  background: linear-gradient(transparent, rgba(0,0,0,0.6));
+}
+
+.time-axis span {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  color: rgba(255,255,255,0.4);
+  align-self: flex-end;
+}
+
+/* Mode badge (LOG/LIN) */
+.mode-badge {
+  position: absolute;
+  bottom: 20px;
+  left: 8px;
+  background: rgba(229,255,0,0.9);
+  color: #000;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 2px;
+  pointer-events: none;
+}
+
+/* ─── Bottom Panel (scrollable) ─── */
+.bottom-panel {
+  flex-shrink: 0;
+  max-height: 35vh;
+  overflow-y: auto;
+  background: var(--bg-dark);
+  border-top: 1px solid var(--border);
+}
+
+/* ─── Metrics Bar ─── */
+.metrics-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  padding: 6px 12px;
+  background: var(--bg-card);
+  border-bottom: 1px solid var(--border);
+  min-height: 36px;
+  gap: 4px;
+}
+
+.metric-item {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+}
+
+.metric-item .metric-label {
+  font-size: 9px;
+  color: var(--text-muted);
+  font-family: var(--font-sans);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.metric-item .metric-value {
+  font-weight: 600;
+}
+
+.infra-chip {
+  background: rgba(56,139,253,0.2);
+  color: #388bfd;
+  font-size: 8px;
+  font-weight: 700;
+  padding: 1px 4px;
+  border-radius: 2px;
+  font-family: var(--font-sans);
+  letter-spacing: 0.5px;
+}
+
+/* ─── Weather Bar ─── */
+.weather-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 12px;
+  background: var(--bg-surface);
+  border-bottom: 1px solid var(--border);
+  min-height: 32px;
+  cursor: pointer;
+}
+
+.weather-bar .wx-item {
+  font-size: 11px;
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.weather-bar .wx-item .wx-val {
+  font-family: var(--font-mono);
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+/* ─── Storm Alert ─── */
+.storm-alert {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--border);
+  min-height: 36px;
+}
+
+.storm-alert.low { background: #0a1a0a; }
+.storm-alert.medium { background: #1a1a0a; }
+.storm-alert.high { background: #1a100a; }
+.storm-alert.critical {
+  background: #1a0505;
+  animation: pulse-alert 2s ease infinite;
+}
+
+@keyframes pulse-alert {
+  0%, 100% { box-shadow: inset 0 0 0 0 rgba(255,51,51,0); }
+  50% { box-shadow: inset 0 0 12px 0 rgba(255,51,51,0.15); }
+}
+
+.storm-alert .storm-icon {
+  flex-shrink: 0;
+}
+
+.storm-alert .storm-text {
+  flex: 1;
+  font-size: 11px;
+  line-height: 1.4;
+}
+
+.storm-alert .storm-text .storm-msg {
+  font-weight: 600;
+}
+
+.storm-alert .storm-text .storm-suggest {
+  font-size: 10px;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+.storm-factors {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: 4px;
+}
+
+.storm-factor {
+  font-size: 9px;
+  padding: 1px 5px;
+  border-radius: 3px;
+  background: rgba(255,255,255,0.06);
+  color: var(--text-secondary);
+}
+
+/* ─── Expandable Sections ─── */
+.expand-section {
+  border-bottom: 1px solid var(--border);
+}
+
+.expand-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 12px;
+  cursor: pointer;
+  background: var(--bg-card);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.expand-header:active {
+  background: var(--bg-surface);
+}
+
+.expand-body {
+  padding: 12px;
+  background: var(--bg-dark);
+}
+
+/* ─── Cards inside expanded sections ─── */
+.card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 12px;
+  margin-bottom: 12px;
+}
+
+.card:last-child { margin-bottom: 0; }
+
+.card-title {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  margin-bottom: 10px;
+}
+
+.card-title-icon { color: var(--accent); flex-shrink: 0; }
+
+/* ─── Weather Table ─── */
+.weather-scroll {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.weather-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 11px;
+}
+
+.weather-table th {
+  text-align: left;
+  color: var(--text-muted);
+  font-weight: 500;
+  padding: 4px 6px;
+  border-bottom: 1px solid var(--border);
+  white-space: nowrap;
+  font-size: 10px;
+}
+
+.weather-table td {
+  padding: 4px 6px;
+  border-bottom: 1px solid rgba(255,255,255,0.03);
+  white-space: nowrap;
+}
+
+.weather-table .storm-row {
+  background: rgba(255,51,51,0.06);
+}
+
+/* ─── Weather Map ─── */
+.weather-map {
+  width: 100%;
+  height: 200px;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  margin-top: 8px;
+}
+
+/* ─── Utility Classes ─── */
+.text-mono { font-family: var(--font-mono); }
+.text-accent { color: var(--accent); }
+.text-danger { color: var(--danger); }
+.text-warn { color: var(--warn); }
+.text-ok { color: var(--ok); }
+.text-muted { color: var(--text-muted); }
+
+.flex-between {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.value-display {
+  font-family: var(--font-mono);
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.separator {
+  height: 1px;
+  background: var(--border);
+  margin: 10px 0;
+}
+
+.btn-sm {
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  color: var(--text-secondary);
+  padding: 4px 10px;
+  border-radius: var(--radius-sm);
+  font-size: 11px;
+  cursor: pointer;
+  font-family: var(--font-sans);
+  display: inline-flex;
+  align-items: center;
+}
+
+.error-msg {
+  background: rgba(255,51,51,0.1);
+  border: 1px solid rgba(255,51,51,0.3);
+  color: var(--danger);
+  padding: 8px 12px;
+  border-radius: var(--radius-sm);
+  font-size: 12px;
+  margin-top: 8px;
+}
+
+/* ─── Loading ─── */
+.loading-spinner {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px;
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid var(--border);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ─── Permission Overlay ─── */
+.permission-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.95);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  z-index: 1000;
+  padding: 32px;
+  text-align: center;
+}
+
+.permission-overlay h2 {
+  font-size: 20px;
+  color: var(--accent);
+}
+
+.permission-overlay p {
+  font-size: 13px;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  max-width: 300px;
+}
+
+.permission-overlay button {
+  background: var(--accent);
+  color: #000;
+  border: none;
+  padding: 14px 32px;
+  border-radius: var(--radius-md);
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: var(--font-sans);
+}
+
+/* ─── Gain Slider ─── */
+.gain-slider {
+  -webkit-appearance: none;
+  width: 100%;
+  height: 4px;
+  border-radius: 2px;
+  background: var(--border);
+  outline: none;
+}
+
+.gain-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--accent);
+  cursor: pointer;
+}
+
+/* ─── Leaflet overrides ─── */
+.leaflet-container {
+  background: #0d1526 !important;
+}
