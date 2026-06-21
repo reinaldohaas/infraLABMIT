@@ -1,28 +1,30 @@
+# -*- coding: utf-8 -*-
 """
 labmit_analyze.py
 =================
-Baixa e analisa dados do Firebase Firestore do projeto LABMIT-UFSC.
+Download and analyse LABMIT infrasound data from Firebase Firestore.
 
-╔══════════════════════════════════════════════════════════════════╗
-║              🔒 ACESSO RESTRITO — AUTORIZAÇÃO OBRIGATÓRIA        ║
-║                                                                  ║
-║  O acesso aos dados do Firebase deste projeto requer             ║
-║  autorização prévia do autor:                                    ║
-║                                                                  ║
-║  Prof. Reinaldo Haas — reinaldohaas@ufsc.br                     ║
-║  LABMIT / Departamento de Física — UFSC                         ║
-║                                                                  ║
-║  A chave de serviço (serviceAccountKey.json) NÃO está           ║
-║  incluída no repositório e só é fornecida mediante              ║
-║  autorização expressa do responsável pelo projeto.              ║
-╚══════════════════════════════════════════════════════════════════╝
+===========================================================
+  RESTRICTED ACCESS - AUTHORISATION REQUIRED
+===========================================================
+  Access to the Firebase database of this project requires
+  prior authorisation from the author:
 
-Pré-requisitos
---------------
+  Prof. Reinaldo Haas - reinaldohaas@ufsc.br
+  LABMIT / Department of Physics - UFSC (Brazil)
+
+  The service account key (serviceAccountKey.json) is NOT
+  included in this repository and is only provided upon
+  express authorisation from the project owner.
+===========================================================
+
+Requirements
+------------
 1. pip install firebase-admin pandas matplotlib seaborn
-2. Solicitar a chave de serviço: reinaldohaas@ufsc.br
-   Salvar como "serviceAccountKey.json" na mesma pasta deste script.
+2. Request the service account key: reinaldohaas@ufsc.br
+   Save it as "serviceAccountKey.json" in the same folder as this script.
 """
+
 
 import json
 import pandas as pd
@@ -35,8 +37,12 @@ from datetime import datetime, timezone
 import firebase_admin
 from firebase_admin import credentials, firestore
 
+# Path to the service account key (request from reinaldohaas@ufsc.br)
+# Use a raw string r"..." or forward slashes to avoid \U unicode escape errors on Windows
+SERVICE_ACCOUNT_KEY = r"serviceAccountKey.json"  # place the file in the same folder as this script
+
 if not firebase_admin._apps:
-    cred = credentials.Certificate("serviceAccountKey.json")
+    cred = credentials.Certificate(SERVICE_ACCOUNT_KEY)
     firebase_admin.initialize_app(cred)
 
 db = firestore.client()
