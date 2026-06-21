@@ -3,13 +3,25 @@ labmit_analyze.py
 =================
 Baixa e analisa dados do Firebase Firestore do projeto LABMIT-UFSC.
 
+╔══════════════════════════════════════════════════════════════════╗
+║              🔒 ACESSO RESTRITO — AUTORIZAÇÃO OBRIGATÓRIA        ║
+║                                                                  ║
+║  O acesso aos dados do Firebase deste projeto requer             ║
+║  autorização prévia do autor:                                    ║
+║                                                                  ║
+║  Prof. Reinaldo Haas — reinaldohaas@ufsc.br                     ║
+║  LABMIT / Departamento de Física — UFSC                         ║
+║                                                                  ║
+║  A chave de serviço (serviceAccountKey.json) NÃO está           ║
+║  incluída no repositório e só é fornecida mediante              ║
+║  autorização expressa do responsável pelo projeto.              ║
+╚══════════════════════════════════════════════════════════════════╝
+
 Pré-requisitos
 --------------
 1. pip install firebase-admin pandas matplotlib seaborn
-2. Baixar a chave de serviço:
-   Firebase Console → Configurações do projeto → Contas de serviço
-   → Gerar nova chave privada → salvar como "serviceAccountKey.json"
-   na mesma pasta deste script.
+2. Solicitar a chave de serviço: reinaldohaas@ufsc.br
+   Salvar como "serviceAccountKey.json" na mesma pasta deste script.
 """
 
 import json
